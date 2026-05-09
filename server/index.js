@@ -11,6 +11,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import venueRoutes from "./routes/venueRoutes.js";
 import locationSuggestionRoutes from "./routes/locationSuggestionRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 
 dotenv.config();
 
@@ -38,7 +39,9 @@ app.use("/api/matching", matchingRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api", messageRoutes);
 app.use("/api/venues", venueRoutes);
+app.use("/api/ai", aiRoutes);
 app.use("/api", locationSuggestionRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 

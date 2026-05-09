@@ -18,7 +18,56 @@ function Dashboard() {
           <p>Smart sports matching for spontaneous activities.</p>
         </div>
 
-        <button onClick={handleLogout}>Logout</button>
+        <div className="dashboard-header-actions">
+          <div className="help-popover-wrapper">
+            <button className="help-button" aria-label="How it works">
+              ?
+            </button>
+
+            <div className="help-popover">
+              <h3>How it works</h3>
+
+              <div className="help-steps">
+                <div className="help-step">
+                  <span>1</span>
+                  <div>
+                    <strong>Create your profile</strong>
+                    <p>Add your city, sports and skill level.</p>
+                  </div>
+                </div>
+
+                <div className="help-step">
+                  <span>2</span>
+                  <div>
+                    <strong>Press ShowUpToday</strong>
+                    <p>Tell the app when and what you want to play.</p>
+                  </div>
+                </div>
+
+                <div className="help-step">
+                  <span>3</span>
+                  <div>
+                    <strong>Get matched</strong>
+                    <p>
+                      The app groups compatible players, creates events and
+                      assigns a captain.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="help-step">
+                  <span>4</span>
+                  <div>
+                    <strong>Coordinate and play</strong>
+                    <p>Use the event page and group chat to organize details.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       </header>
 
       <main className="dashboard-content">
@@ -84,47 +133,6 @@ function Dashboard() {
             >
               Browse public events
             </button>
-          </div>
-        </section>
-
-        <section className="showup-card">
-          <h3>How it works</h3>
-
-          <div className="dashboard-steps">
-            <div className="dashboard-step">
-              <span>1</span>
-              <div>
-                <strong>Create your profile</strong>
-                <p>Add your city, sports and skill level.</p>
-              </div>
-            </div>
-
-            <div className="dashboard-step">
-              <span>2</span>
-              <div>
-                <strong>Press ShowUpToday</strong>
-                <p>Tell the app when and what you want to play.</p>
-              </div>
-            </div>
-
-            <div className="dashboard-step">
-              <span>3</span>
-              <div>
-                <strong>Get matched</strong>
-                <p>
-                  The app groups compatible players, creates events and assigns
-                  a captain.
-                </p>
-              </div>
-            </div>
-
-            <div className="dashboard-step">
-              <span>4</span>
-              <div>
-                <strong>Coordinate and play</strong>
-                <p>Use the event page and group chat to organize details.</p>
-              </div>
-            </div>
           </div>
         </section>
       </main>

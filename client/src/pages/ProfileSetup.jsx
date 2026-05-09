@@ -11,8 +11,12 @@ function ProfileSetup() {
   const [city, setCity] = useState("");
   const [sports, setSports] = useState([]);
   const [selectedSports, setSelectedSports] = useState({});
+  const [detectedSports, setDetectedSports] = useState([]);
+
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [detectingSports, setDetectingSports] = useState(false);
 
   useEffect(() => {
     async function fetchSports() {
@@ -48,9 +52,67 @@ function ProfileSetup() {
     }));
   }
 
+  async function detectSportsFromDescription() {
+    setError("");
+    setMessage("");
+
+    if (!description.trim()) {
+      setError("Please write a short description first.");
+      return;
+    }
+
+    setDetectingSports(true);
+
+    try {
+      const data = await apiRequest("/ai/detect-sports", {
+        method: "POST",
+        body: JSON.stringify({
+          description,
+        }),
+      });
+
+      const matchedSports = data.sports || [];
+
+      if (matchedSports.length === 0) {
+        setDetectedSports([]);
+        setMessage(
+          "No sports detected from your description. You can still select them manually."
+        );
+        return;
+      }
+
+      setSelectedSports((prev) => {
+        const updated = { ...prev };
+
+        for (const sport of matchedSports) {
+          if (!updated[sport.id]) {
+            updated[sport.id] = "casual";
+          }
+        }
+
+        return updated;
+      });
+
+      setDetectedSports(matchedSports);
+
+      setMessage(
+        `Detected ${matchedSports.length} sport${
+          matchedSports.length === 1 ? "" : "s"
+        } using ${data.source}: ${matchedSports
+          .map((sport) => sport.name)
+          .join(", ")}`
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDetectingSports(false);
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
+    setMessage("");
     setLoading(true);
 
     try {
@@ -90,6 +152,7 @@ function ProfileSetup() {
         {user && <p className="small-muted">Logged in as {user.email}</p>}
 
         {error && <p className="error">{error}</p>}
+        {message && <p className="success">{message}</p>}
 
         <form onSubmit={handleSubmit}>
           <label>Short description</label>
@@ -100,10 +163,36 @@ function ProfileSetup() {
             rows="4"
           />
 
+          <div className="smart-detection-box">
+            <div>
+              <strong>Smart sport detection</strong>
+              <p>
+                Detect sports from your profile description using local AI.
+                If Ollama is unavailable, the backend uses a lightweight fallback.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={detectSportsFromDescription}
+              disabled={detectingSports}
+            >
+              {detectingSports ? "Detecting..." : "Detect sports"}
+            </button>
+          </div>
+
+          {detectedSports.length > 0 && (
+            <div className="detected-sports-list">
+              {detectedSports.map((sport) => (
+                <span key={sport.id}>{sport.name}</span>
+              ))}
+            </div>
+          )}
+
           <label>City</label>
           <input
             type="text"
-            placeholder="Timișoara"
+            placeholder="Timisoara"
             value={city}
             onChange={(e) => setCity(e.target.value)}
             required

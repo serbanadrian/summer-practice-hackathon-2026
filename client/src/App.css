@@ -805,3 +805,163 @@ select {
     width: 100%;
   }
 }
+.smart-detection-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.smart-detection-box p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.smart-detection-box button {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.detected-sports-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.detected-sports-list span {
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .smart-detection-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .smart-detection-box button {
+    width: 100%;
+  }
+}
+
+.dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.help-popover-wrapper {
+  position: relative;
+}
+
+.help-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  padding: 0;
+  margin-top: 0;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 20px;
+  font-weight: 900;
+  border: 1px solid #c7d2fe;
+}
+
+.help-button:hover {
+  background: #e0e7ff;
+}
+
+.help-popover {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 390px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+  padding: 20px;
+  z-index: 50;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+
+.help-popover-wrapper:hover .help-popover,
+.help-popover-wrapper:focus-within .help-popover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.help-popover h3 {
+  margin: 0 0 14px;
+  text-align: center;
+}
+
+.help-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.help-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+}
+
+.help-step span {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.help-step p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .dashboard-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .help-popover {
+    right: auto;
+    left: 0;
+    width: min(90vw, 390px);
+  }
+}
