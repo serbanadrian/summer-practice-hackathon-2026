@@ -9,6 +9,8 @@ import availabilityRoutes from "./routes/availabilityRoutes.js";
 import matchingRoutes from "./routes/matchingRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+import venueRoutes from "./routes/venueRoutes.js";
+import locationSuggestionRoutes from "./routes/locationSuggestionRoutes.js";
 
 dotenv.config();
 
@@ -35,6 +37,8 @@ app.use("/api/availabilities", availabilityRoutes);
 app.use("/api/matching", matchingRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api", messageRoutes);
+app.use("/api/venues", venueRoutes);
+app.use("/api", locationSuggestionRoutes);
 
 const PORT = process.env.PORT || 5000;
 

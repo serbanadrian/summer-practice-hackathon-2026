@@ -57,6 +57,7 @@ export async function getEventById(req, res) {
       `
       SELECT
         e.id,
+        e.sport_id,
         e.title,
         e.event_date,
         e.time_slot,
@@ -310,6 +311,62 @@ export async function joinEvent(req, res) {
 
     return res.status(500).json({
       message: "Server error while joining event",
+    });
+  }
+}
+export async function updateEventLocation(req, res) {
+  try {
+    const { id } = req.params;
+    const { locationName } = req.body;
+
+    if (!locationName || locationName.trim().length === 0) {
+      return res.status(400).json({
+        message: "locationName is required",
+      });
+    }
+
+    const eventResult = await pool.query(
+      `
+      SELECT id, captain_id
+      FROM events
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (eventResult.rows.length === 0) {
+      return res.status(404).json({
+        message: "Event not found",
+      });
+    }
+
+    const event = eventResult.rows[0];
+
+    if (event.captain_id !== req.userId) {
+      return res.status(403).json({
+        message: "Only the captain can update the event location",
+      });
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE events
+      SET location_name = $1
+      WHERE id = $2
+      RETURNING *
+      `,
+      [locationName.trim(), id]
+    );
+
+    return res.json({
+      message: "Event location updated successfully",
+      event: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Update event location error:", error);
+
+    return res.status(500).json({
+      message: "Server error while updating event location",
     });
   }
 }
