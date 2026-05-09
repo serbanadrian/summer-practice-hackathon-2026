@@ -10,6 +10,7 @@ import EventDetails from "./pages/EventDetails";
 import MatchingPreview from "./pages/MatchingPreview";
 import CreateEvent from "./pages/CreateEvent";
 import PublicEvents from "./pages/PublicEvents";
+import LocationVotes from "./pages/LocationVotes";
 
 import "./App.css";
 
@@ -110,7 +111,15 @@ function App() {
             <PublicEvents />
           </ProtectedRoute>
         }
-      />          
+      />        
+      <Route
+        path="/events/:id/location-votes"
+        element={
+          <ProtectedRoute>
+            <LocationVotes />
+          </ProtectedRoute>
+        }
+      />  
     </Routes>
   );
 }

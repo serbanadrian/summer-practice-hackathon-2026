@@ -163,25 +163,6 @@ function EventDetails() {
     }
   }
 
-  async function chooseFinalLocation(suggestionId) {
-    setError("");
-    setMessage("");
-
-    try {
-      await apiRequest(
-        `/events/${id}/location-suggestions/${suggestionId}/choose`,
-        {
-          method: "PATCH",
-        }
-      );
-
-      setMessage("Final location selected.");
-      await fetchEvent();
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
   async function sendMessage(e) {
     e.preventDefault();
 
@@ -286,8 +267,8 @@ function EventDetails() {
         <div className="event-details-card">
           <h2>Location coordination</h2>
           <p className="small-muted centered-text">
-            Suggest venues, review group proposals, then choose a final location
-            for the event.
+            Suggest venues or custom locations, then use the voting page to
+            decide the final location.
           </p>
 
           <div className="location-coordination-layout">
@@ -321,7 +302,7 @@ function EventDetails() {
                       </p>
 
                       <button onClick={() => suggestVenue(venue)}>
-                        Suggest this venue
+                        Add to group suggestions
                       </button>
                     </div>
                   ))}
@@ -346,7 +327,7 @@ function EventDetails() {
                       key={suggestion.id}
                       className="location-suggestion-item"
                     >
-                      <div>
+                      <div className="location-suggestion-content">
                         <strong>{suggestion.name}</strong>
 
                         <p>{suggestion.address || "No address provided"}</p>
@@ -365,24 +346,28 @@ function EventDetails() {
                         </p>
                       </div>
 
-                      <button
-                        className="secondary-button"
-                        onClick={() => chooseFinalLocation(suggestion.id)}
-                      >
-                        Choose final
-                      </button>
+                      <span className="vote-pill">
+                        {suggestion.vote_count} vote
+                        {suggestion.vote_count === 1 ? "" : "s"}
+                      </span>
                     </div>
                   ))}
                 </div>
               )}
             </div>
           </div>
+
+          <div className="location-votes-button-row">
+            <button onClick={() => navigate(`/events/${id}/location-votes`)}>
+              View location votes
+            </button>
+          </div>
         </div>
 
         <div className="event-details-card">
           <h2>Add custom suggestion</h2>
           <p className="small-muted centered-text">
-            Add a location proposal for the group.
+            Add a custom location proposal for the group.
           </p>
 
           <div className="custom-suggestion-card">

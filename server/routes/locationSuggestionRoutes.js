@@ -3,6 +3,8 @@ import {
   getEventLocationSuggestions,
   createEventLocationSuggestion,
   chooseFinalEventLocation,
+  voteLocationSuggestion,
+  unvoteLocationSuggestion,
 } from "../controllers/locationSuggestionController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
@@ -18,6 +20,18 @@ router.post(
   "/events/:id/location-suggestions",
   authMiddleware,
   createEventLocationSuggestion
+);
+
+router.post(
+  "/events/:id/location-suggestions/:suggestionId/vote",
+  authMiddleware,
+  voteLocationSuggestion
+);
+
+router.delete(
+  "/events/:id/location-suggestions/:suggestionId/vote",
+  authMiddleware,
+  unvoteLocationSuggestion
 );
 
 router.patch(

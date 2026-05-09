@@ -84,3 +84,11 @@ CREATE TABLE IF NOT EXISTS event_location_suggestions (
   price_per_hour NUMERIC(10, 2),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS location_suggestion_votes (
+  id SERIAL PRIMARY KEY,
+  suggestion_id INT NOT NULL REFERENCES event_location_suggestions(id) ON DELETE CASCADE,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(suggestion_id, user_id)
+);
