@@ -46,7 +46,7 @@ function Register() {
           <input
             name="name"
             type="text"
-            placeholder="Adrian"
+            placeholder="Name"
             value={formData.name}
             onChange={handleChange}
             required
