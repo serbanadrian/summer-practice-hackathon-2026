@@ -965,3 +965,28 @@ select {
     width: min(90vw, 390px);
   }
 }
+
+.selected-availability-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.selected-availability-status span {
+  color: #6b7280;
+}
+
+.available-text {
+  color: #166534;
+}
+
+.unavailable-text {
+  color: #991b1b;
+}

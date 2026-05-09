@@ -48,14 +48,21 @@ function ShowUpToday() {
     }
   }
 
+  function chooseAvailability(value) {
+    setIsAvailable(value);
+    setError("");
+    setMessage("");
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+
     setError("");
     setMessage("");
     setLoading(true);
 
     try {
-      await apiRequest("/availabilities/show-up-today", {
+      const data = await apiRequest("/availabilities/show-up-today", {
         method: "POST",
         body: JSON.stringify({
           sportId: Number(sportId),
@@ -65,11 +72,19 @@ function ShowUpToday() {
         }),
       });
 
-      setMessage(
-        isAvailable
-          ? "Nice! You are available. We can now match you with others."
-          : "No worries. We saved that you are not available for this slot."
-      );
+      if (!isAvailable) {
+        setMessage(
+          "No worries. We saved that you are not available for this slot."
+        );
+      } else if (data.createdCount > 0) {
+        setMessage(
+          `Great! ${data.createdCount} event(s) were created automatically. Check your matched events.`
+        );
+      } else {
+        setMessage(
+          "Nice! You are available. Not enough players yet, but you now appear in matching preview."
+        );
+      }
 
       await fetchMyAvailabilities();
     } catch (err) {
@@ -134,26 +149,45 @@ function ShowUpToday() {
             </select>
 
             <label>Availability</label>
+
             <div className="availability-toggle">
               <button
                 type="button"
                 className={isAvailable ? "toggle-active" : "toggle-button"}
-                onClick={() => setIsAvailable(true)}
+                onClick={() => chooseAvailability(true)}
               >
                 Yes, I want to move
               </button>
 
               <button
                 type="button"
-                className={!isAvailable ? "toggle-active danger" : "toggle-button"}
-                onClick={() => setIsAvailable(false)}
+                className={
+                  !isAvailable ? "toggle-active danger" : "toggle-button"
+                }
+                onClick={() => chooseAvailability(false)}
               >
                 Not this time
               </button>
             </div>
 
+            <div className="selected-availability-status">
+              <span>Selected status:</span>
+
+              <strong
+                className={isAvailable ? "available-text" : "unavailable-text"}
+              >
+                {isAvailable
+                  ? "Available for matching"
+                  : "Not available for this slot"}
+              </strong>
+            </div>
+
             <button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save availability"}
+              {loading
+                ? "Saving..."
+                : isAvailable
+                ? "Save as available"
+                : "Save as not available"}
             </button>
           </form>
         </div>
@@ -177,7 +211,9 @@ function ShowUpToday() {
 
                   <span
                     className={
-                      item.is_available ? "status-available" : "status-unavailable"
+                      item.is_available
+                        ? "status-available"
+                        : "status-unavailable"
                     }
                   >
                     {item.is_available ? "Available" : "Unavailable"}
