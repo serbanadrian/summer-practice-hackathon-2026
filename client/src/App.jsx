@@ -8,6 +8,8 @@ import ShowUpToday from "./pages/ShowUpToday";
 import MyEvents from "./pages/MyEvents";
 import EventDetails from "./pages/EventDetails";
 import MatchingPreview from "./pages/MatchingPreview";
+import CreateEvent from "./pages/CreateEvent";
+import PublicEvents from "./pages/PublicEvents";
 
 import "./App.css";
 
@@ -91,7 +93,24 @@ function App() {
             <MatchingPreview />
           </ProtectedRoute>
   }
-/>           
+      /> 
+      <Route
+        path="/create-event"
+        element={
+          <ProtectedRoute>
+            <CreateEvent />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/public-events"
+        element={
+          <ProtectedRoute>
+            <PublicEvents />
+          </ProtectedRoute>
+        }
+      />          
     </Routes>
   );
 }

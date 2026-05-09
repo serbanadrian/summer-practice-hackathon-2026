@@ -67,6 +67,27 @@ function Dashboard() {
         </section>
 
         <section className="showup-card">
+          <h3>Manual events</h3>
+          <p>
+            Create your own sports event or browse open events created by other
+            players.
+          </p>
+
+          <div className="button-row">
+            <button onClick={() => navigate("/create-event")}>
+              Create event
+            </button>
+
+            <button
+              className="secondary-button"
+              onClick={() => navigate("/public-events")}
+            >
+              Browse public events
+            </button>
+          </div>
+        </section>
+
+        <section className="showup-card">
           <h3>How it works</h3>
 
           <div className="dashboard-steps">
@@ -90,7 +111,10 @@ function Dashboard() {
               <span>3</span>
               <div>
                 <strong>Get matched</strong>
-                <p>The app groups compatible players and assigns a captain.</p>
+                <p>
+                  The app groups compatible players, creates events and assigns
+                  a captain.
+                </p>
               </div>
             </div>
 

@@ -152,3 +152,164 @@ export async function confirmParticipation(req, res) {
     });
   }
 }
+
+export async function createManualEvent(req, res) {
+  try {
+    const {
+      sportId,
+      title,
+      eventDate,
+      timeSlot,
+      city,
+      locationName,
+    } = req.body;
+
+    if (!sportId || !title || !eventDate || !timeSlot || !city) {
+      return res.status(400).json({
+        message: "sportId, title, eventDate, timeSlot and city are required",
+      });
+    }
+
+    const sportResult = await pool.query(
+      "SELECT id, name FROM sports WHERE id = $1",
+      [sportId]
+    );
+
+    if (sportResult.rows.length === 0) {
+      return res.status(404).json({
+        message: "Sport not found",
+      });
+    }
+
+    const eventResult = await pool.query(
+      `
+      INSERT INTO events (
+        sport_id,
+        captain_id,
+        title,
+        event_date,
+        time_slot,
+        city,
+        location_name,
+        status
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, 'open')
+      RETURNING *
+      `,
+      [
+        sportId,
+        req.userId,
+        title,
+        eventDate,
+        timeSlot,
+        city,
+        locationName || "Location to be decided",
+      ]
+    );
+
+    const event = eventResult.rows[0];
+
+    await pool.query(
+      `
+      INSERT INTO event_participants (event_id, user_id, status)
+      VALUES ($1, $2, 'confirmed')
+      ON CONFLICT (event_id, user_id) DO NOTHING
+      `,
+      [event.id, req.userId]
+    );
+
+    return res.status(201).json({
+      message: "Manual event created successfully",
+      event,
+    });
+  } catch (error) {
+    console.error("Create manual event error:", error);
+
+    return res.status(500).json({
+      message: "Server error while creating manual event",
+    });
+  }
+}
+
+export async function getPublicEvents(req, res) {
+  try {
+    const result = await pool.query(
+      `
+      SELECT
+        e.id,
+        e.title,
+        e.event_date,
+        e.time_slot,
+        e.city,
+        e.location_name,
+        e.status,
+        s.name AS sport_name,
+        s.min_players,
+        s.max_players,
+        captain.name AS captain_name,
+        COUNT(ep.id) AS participants_count
+      FROM events e
+      JOIN sports s ON e.sport_id = s.id
+      LEFT JOIN users captain ON e.captain_id = captain.id
+      LEFT JOIN event_participants ep ON e.id = ep.event_id
+      WHERE e.status = 'open'
+      GROUP BY
+        e.id,
+        s.name,
+        s.min_players,
+        s.max_players,
+        captain.name
+      ORDER BY e.event_date ASC, e.created_at DESC
+      `
+    );
+
+    return res.json({
+      events: result.rows,
+    });
+  } catch (error) {
+    console.error("Get public events error:", error);
+
+    return res.status(500).json({
+      message: "Server error while fetching public events",
+    });
+  }
+}
+
+export async function joinEvent(req, res) {
+  try {
+    const { id } = req.params;
+
+    const eventResult = await pool.query(
+      "SELECT id FROM events WHERE id = $1",
+      [id]
+    );
+
+    if (eventResult.rows.length === 0) {
+      return res.status(404).json({
+        message: "Event not found",
+      });
+    }
+
+    const result = await pool.query(
+      `
+      INSERT INTO event_participants (event_id, user_id, status)
+      VALUES ($1, $2, 'pending')
+      ON CONFLICT (event_id, user_id)
+      DO UPDATE SET status = EXCLUDED.status
+      RETURNING *
+      `,
+      [id, req.userId]
+    );
+
+    return res.json({
+      message: "Joined event successfully",
+      participation: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Join event error:", error);
+
+    return res.status(500).json({
+      message: "Server error while joining event",
+    });
+  }
+}
