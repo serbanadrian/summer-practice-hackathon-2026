@@ -8,6 +8,7 @@ import userRoutes from "./routes/userRoutes.js";
 import availabilityRoutes from "./routes/availabilityRoutes.js";
 import matchingRoutes from "./routes/matchingRoutes.js";
 import eventRoutes from "./routes/eventRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/availabilities", availabilityRoutes);
 app.use("/api/matching", matchingRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api", messageRoutes);
 
 const PORT = process.env.PORT || 5000;
 
