@@ -1,4 +1,5 @@
 import pool from "../db.js";
+import { runMatchingService } from "../services/matchingService.js";
 
 export async function showUpToday(req, res) {
   try {
@@ -35,7 +36,14 @@ export async function showUpToday(req, res) {
       DO UPDATE SET
         is_available = EXCLUDED.is_available,
         created_at = CURRENT_TIMESTAMP
-      RETURNING id, user_id, sport_id, availability_date, time_slot, is_available, created_at
+      RETURNING 
+        id,
+        user_id,
+        sport_id,
+        availability_date,
+        time_slot,
+        is_available,
+        created_at
       `,
       [
         req.userId,
@@ -46,12 +54,26 @@ export async function showUpToday(req, res) {
       ]
     );
 
+    let createdEvents = [];
+
+    /*
+      Matching automat:
+      - rulăm matching doar dacă userul a spus că este disponibil
+      - dacă userul apasă "Not this time", nu are sens să creăm event-uri
+    */
+    if (isAvailable !== false) {
+      createdEvents = await runMatchingService();
+    }
+
     return res.status(201).json({
       message: "Availability saved successfully",
       availability: result.rows[0],
+      createdEvents,
+      createdCount: createdEvents.length,
     });
   } catch (error) {
     console.error("Show up today error:", error);
+
     return res.status(500).json({
       message: "Server error while saving availability",
     });
@@ -85,6 +107,7 @@ export async function getMyAvailabilities(req, res) {
     });
   } catch (error) {
     console.error("Get my availabilities error:", error);
+
     return res.status(500).json({
       message: "Server error while fetching availabilities",
     });

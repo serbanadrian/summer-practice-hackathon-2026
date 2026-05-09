@@ -7,6 +7,7 @@ import ProfileSetup from "./pages/ProfileSetup";
 import ShowUpToday from "./pages/ShowUpToday";
 import MyEvents from "./pages/MyEvents";
 import EventDetails from "./pages/EventDetails";
+import MatchingPreview from "./pages/MatchingPreview";
 
 import "./App.css";
 
@@ -82,7 +83,15 @@ function App() {
            <EventDetails />
          </ProtectedRoute>
        }
-      />      
+      /> 
+      <Route
+        path="/matching-preview"
+        element={
+         <ProtectedRoute>
+            <MatchingPreview />
+          </ProtectedRoute>
+  }
+/>           
     </Routes>
   );
 }
